@@ -1,4 +1,5 @@
 
+TARGET = 2020
 
 with open('input.txt') as f:
     entry_list = sorted([int(row) for row in f])
@@ -9,9 +10,9 @@ with open('input.txt') as f:
         left_value = entry_list[left_pos]
         right_value = entry_list[right_pos]
         sum_value = left_value + right_value
-        if sum_value > 2020:
+        if sum_value > TARGET:
             right_pos -= 1
-        elif sum_value < 2020:
+        elif sum_value < TARGET:
             left_pos += 1
         else:
             result = left_value * right_value
