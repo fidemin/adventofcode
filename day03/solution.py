@@ -1,4 +1,4 @@
-from .common import tree_exists_at_position
+from common import tree_exists_at_position
 
 if __name__ == '__main__':
     with open('input.txt', 'r') as f:
