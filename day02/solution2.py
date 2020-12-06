@@ -27,24 +27,26 @@ class PasswordRule:
         first_pos, second_pos = positions_str.split('-')
         return PasswordRule(int(first_pos) - 1, int(second_pos) - 1, char)
 
-    def validate(self, password):
+    def _is_valid_for_pos(self, password: str, pos: int) -> bool:
+        if len(password) < pos + 1 or password[pos] != self._char:
+            return False
+        return True
+
+    def is_valid(self, password: str) -> bool:
         """
         :param password:
         :return:
         """
-        if len(password) < self._first_pos + 1:
-            return False
 
-        if password[self._first_pos] == self._char:
-            return True
+        is_first_pos_valid = self._is_valid_for_pos(password, self._first_pos)
+        is_second_pos_valid = self._is_valid_for_pos(password, self._second_pos)
+        if is_first_pos_valid:
+            if is_second_pos_valid:
+                return False
+            else:
+                return True
 
-        if len(password) < self._second_pos + 1:
-            return False
-
-        if password[self._second_pos] == self._char:
-            return True
-
-        return False
+        return is_second_pos_valid
 
 
 if __name__ == '__main__':
@@ -53,7 +55,7 @@ if __name__ == '__main__':
         for row in f:
             rule_str, password = parse_input_row(row)
             rule = PasswordRule.from_string(rule_str)
-            if rule.validate(password):
+            if rule.is_valid(password):
                 count += 1
     print(count)
 
