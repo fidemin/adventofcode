@@ -1,5 +1,4 @@
-
-from .solution import tree_exists_at_position
+from .common import tree_exists_at_position
 
 
 def test_tree_exists_at_position():
