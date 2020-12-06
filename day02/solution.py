@@ -27,7 +27,7 @@ class PasswordRule:
         min_str, max_str = min_max_str.split('-')
         return PasswordRule(int(min_str), int(max_str), char)
 
-    def validate(self, password):
+    def is_valid(self, password):
         """
         :param password:
         :return:
@@ -50,7 +50,7 @@ if __name__ == '__main__':
         for row in f:
             rule_str, password = parse_input_row(row)
             rule = PasswordRule.from_string(rule_str)
-            if rule.validate(password):
+            if rule.is_valid(password):
                 count += 1
     print(count)
 

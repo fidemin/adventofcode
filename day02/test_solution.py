@@ -10,9 +10,9 @@ class TestPasswordRule:
 
     def test_validate(self):
         rule = PasswordRule.from_string('7-11 g')
-        assert not rule.validate('abgggcgzgg')
-        assert rule.validate('kdggggdkggg')
-        assert rule.validate('kdggggdgkggg')
-        assert rule.validate('kdggggdgkggggzgg')
-        assert not rule.validate('kggdggggdgkggggzgg')
+        assert not rule.is_valid('abgggcgzgg')
+        assert rule.is_valid('kdggggdkggg')
+        assert rule.is_valid('kdggggdgkggg')
+        assert rule.is_valid('kdggggdgkggggzgg')
+        assert not rule.is_valid('kggdggggdgkggggzgg')
 
