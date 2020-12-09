@@ -1,4 +1,5 @@
 import re
+from collections import defaultdict
 
 
 class LuggageRule:
@@ -6,15 +7,15 @@ class LuggageRule:
     def from_str(cls, luggage_rule_str: str):
         luggage_rule_str = luggage_rule_str.strip().rstrip('.')
         main_bag_str, mini_bags_str = luggage_rule_str.split(' contain ')
-        mini_bag_str_list = mini_bags_str.split(', ')
+        inner_bag_str_list = mini_bags_str.split(', ')
         main_bag_color = cls._extract_bag_color(main_bag_str)
-        mini_bag_color_list = []
-        for mini_bag_str in mini_bag_str_list:
-            bag_color = cls._extract_bag_color(mini_bag_str)
+        inner_bag_color_list = []
+        for inner_bag_str in inner_bag_str_list:
+            bag_color = cls._extract_bag_color(inner_bag_str)
             if not bag_color:
                 break
-            mini_bag_color_list.append(bag_color)
-        return LuggageRule(main_bag_color, mini_bag_color_list)
+            inner_bag_color_list.append(bag_color)
+        return LuggageRule(main_bag_color, inner_bag_color_list)
 
     @staticmethod
     def _extract_bag_color(bag_str) -> str:
@@ -47,7 +48,22 @@ class LuggageRule:
         return f'{self.main_bag_color}: {self.inner_bag_colors}'
 
 
+def find_all_bag_colors_contains_the_bag(bag_set: set, inverse_index: dict, target_bag_color: str):
+    bags_contain_directly = inverse_index[target_bag_color]
+    for bag_color in bags_contain_directly:
+        bag_set.add(bag_color)
+        find_all_bag_colors_contains_the_bag(bag_set, inverse_index, bag_color)
+
+
 if __name__ == '__main__':
-    with open('sample_input.txt') as f:
+    inverse_index = defaultdict(set)
+    bags_contain_shiny_gold = set()
+    with open('input.txt') as f:
         for row in f:
-            print(LuggageRule.from_str(row))
+            rule = LuggageRule.from_str(row)
+            for mini_bag_color in rule.inner_bag_colors:
+                inverse_index[mini_bag_color].add(rule.main_bag_color)
+
+    bag_set = set()
+    find_all_bag_colors_contains_the_bag(bag_set, inverse_index, 'shiny gold')
+    print(len(bag_set))
