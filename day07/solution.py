@@ -16,8 +16,8 @@ if __name__ == '__main__':
     with open('input.txt') as f:
         for row in f:
             rule = LuggageRule.from_str(row)
-            for mini_bag_color in rule.inner_bag_colors:
-                inverse_index[mini_bag_color].add(rule.main_bag_color)
+            for inner_bag in rule.inner_bags:
+                inverse_index[inner_bag[1]].add(rule.main_bag_color)
 
     bag_set = set()
     find_all_bag_colors_contains_the_bag(bag_set, inverse_index, 'shiny gold')
