@@ -22,16 +22,24 @@ def run():
                 num_occupied = 0
                 offsets = ((-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1))
                 for offset in offsets:
-                    adj_row_i = row_i + offset[0]
-                    adj_col_i = col_i + offset[1]
-                    if (0 <= adj_row_i < num_of_rows) and (0 <= adj_col_i < num_of_cols):
-                        adj_value = seats[adj_row_i][adj_col_i]
-                        if adj_value == '#':
-                            num_occupied += 1
+                    repeat = 1
+                    while True:
+                        adj_row_i = row_i + offset[0] * repeat
+                        adj_col_i = col_i + offset[1] * repeat
+                        if (0 <= adj_row_i < num_of_rows) and (0 <= adj_col_i < num_of_cols):
+                            adj_value = seats[adj_row_i][adj_col_i]
+                            if adj_value == '.':
+                                repeat += 1
+                                continue
+                            elif adj_value == '#':
+                                num_occupied += 1
+                            break
+                        else:
+                            break
 
                 if this_value == 'L' and num_occupied == 0:
                     next_round_seats[row_i][col_i] = '#'
-                if this_value == '#' and num_occupied >= 4:
+                if this_value == '#' and num_occupied >= 5:
                     next_round_seats[row_i][col_i] = 'L'
 
         # print(next_round_seats)
