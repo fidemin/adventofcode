@@ -18,10 +18,16 @@ func main() {
 	}
 	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-
-	previousDepth := math.MaxInt
+	const length = 3
+	depths := [length]int{}
+	// initialize with math.MaxInt
+	for i := range depths {
+		depths[i] = math.MaxInt
+	}
+	counter := 0
 	increased := 0
+
+	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		depthStr := scanner.Text()
 		depth, err := strconv.Atoi(depthStr)
@@ -29,10 +35,12 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if previousDepth < depth {
+		position := counter  % length
+		if depths[position] < depth {
 			increased += 1
 		}
-		previousDepth = depth
+		depths[position] = depth
+		counter += 1
 	}
 
 	fmt.Printf("result: %d\n", increased)
