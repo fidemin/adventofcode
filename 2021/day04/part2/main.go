@@ -12,6 +12,7 @@ import (
 
 type Game struct {
 	Boards         [][5][5]int
+	BoardsFlags    []bool
 	NumToPositions map[int][][3]int
 }
 
@@ -93,6 +94,7 @@ func parseInput(filename string) ([]int, Game) {
 			boardPos += 1
 			// append board to boards
 			boards.Boards = append(boards.Boards, board)
+			boards.BoardsFlags = append(boards.BoardsFlags, true)
 			// initialize new board
 			board = [5][5]int{}
 			rowPos = 0
@@ -100,12 +102,14 @@ func parseInput(filename string) ([]int, Game) {
 	}
 	// append board to boards
 	boards.Boards = append(boards.Boards, board)
+	boards.BoardsFlags = append(boards.BoardsFlags, true)
 	return drawnNumbers, boards
 }
 
 func main() {
 	filename := os.Args[1]
 	drawnNumbers, game := parseInput(filename)
+	fmt.Println(drawnNumbers)
 
 	finalPos := [3]int{}
 	finalNum := 0
@@ -117,9 +121,18 @@ Outer:
 		for _, pos := range positions {
 			game.Boards[pos[0]][pos[1]][pos[2]] = math.MaxInt
 			if game.CheckRowAndColMarkedAtPos(pos) {
-				finalPos = pos
-				finalNum = num
-				break Outer
+				game.BoardsFlags[pos[0]] = false
+				numFalse := 0
+				for _, flag := range game.BoardsFlags {
+					if !flag {
+						numFalse += 1
+					}
+				}
+				if numFalse == len(game.BoardsFlags) {
+					finalPos = pos
+					finalNum = num
+					break Outer
+				}
 			}
 		}
 	}
