@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -102,57 +103,56 @@ func parseInput(filename string) []Line {
 	return lines
 }
 
+// find intersect of two lines (x1, x2), (x3, x4)
+func intersectTwoLines(line1 [2]int, line2 [2]int) ([]int, bool) {
+	sort.Ints(line1[:])
+	sort.Ints(line2[:])
+
+	firstLine := line1
+	secondLine := line2
+
+	if line1[0] > line2[0] {
+		firstLine = line2
+		secondLine = line1
+	}
+
+	if secondLine[0] > firstLine[1] {
+		// no intersect
+		return make([]int, 0), false
+	} else {
+		result := make([]int, 2)
+		result[0] = Max(firstLine[0], secondLine[0])
+		result[1] = Min(firstLine[1], secondLine[1])
+		return result, true
+	}
+}
+
 func findOverlaps(linesMap map[int][]Line) map[int][][2]int {
 	overlapsMap := make(map[int][][2]int)
 
-	for sameValue, horizontalLines := range linesMap {
+	for sameValue, lines := range linesMap {
 		fmt.Println(sameValue)
-		length := len(horizontalLines)
+		length := len(lines)
 		if length <= 1 {
 			continue
 		}
 		for i := 0; i < length-1; i++ {
-			thisLine := horizontalLines[i]
+			thisLine := lines[i]
 			for j := i + 1; j < length; j++ {
-				thatLine := horizontalLines[j]
+				thatLine := lines[j]
+				overlapLine := make([]int, 0)
+				overlapped := false
 				if thisLine.isHorizontal {
-					// y value is same
-					firstLine := thisLine
-					secondLine := thatLine
-
-					if thisLine.x1 > thatLine.x1 {
-						firstLine = thatLine
-						secondLine = thisLine
-					}
-
-					if secondLine.x1 > firstLine.x2 {
-						// no overap
-						continue
-					} else {
-						overapX1 := Max(firstLine.x1, secondLine.x1)
-						overapX2 := Min(firstLine.x2, secondLine.x2)
-						overlapsMap[sameValue] = append(overlapsMap[sameValue], [2]int{overapX1, overapX2})
-					}
-
+					overlapLine, overlapped = intersectTwoLines([2]int{thisLine.x1, thisLine.x2}, [2]int{thatLine.x1, thatLine.x2})
 				} else {
-					// x value is same
-					firstLine := thisLine
-					secondLine := thatLine
-
-					if thisLine.y1 > thatLine.y1 {
-						firstLine = thatLine
-						secondLine = thisLine
-					}
-
-					if secondLine.y1 > firstLine.y2 {
-						// no overap
-						continue
-					} else {
-						overapY1 := Max(firstLine.y1, secondLine.y1)
-						overapY2 := Min(firstLine.y2, secondLine.y2)
-						overlapsMap[sameValue] = append(overlapsMap[sameValue], [2]int{overapY1, overapY2})
-					}
+					overlapLine, overlapped = intersectTwoLines([2]int{thisLine.y1, thisLine.y2}, [2]int{thatLine.y1, thatLine.x2})
 				}
+
+				if !overlapped {
+					continue
+				}
+
+				overlapsMap[sameValue] = append(overlapsMap[sameValue], [2]int{overlapLine[0], overlapLine[1]})
 			}
 		}
 	}
