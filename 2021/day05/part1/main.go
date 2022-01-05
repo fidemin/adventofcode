@@ -15,7 +15,6 @@ type Diagram struct {
 	verticalLines     map[int][]Line
 	horizontalOveraps map[int][][2]int
 	verticalOveraps   map[int][][2]int
-	crossOveraps      [][2]int
 }
 
 type Line struct {
@@ -127,11 +126,29 @@ func intersectTwoLines(line1 [2]int, line2 [2]int) ([]int, bool) {
 	}
 }
 
+func findCrossPoint(line1 Line, line2 Line) ([]int, bool) {
+	hLine := line1
+	vLine := line2
+
+	if !line1.isHorizontal {
+		vLine = line1
+		hLine = line2
+	}
+
+	if !(hLine.x1 <= vLine.x1 && hLine.x2 >= vLine.x1 && vLine.y1 <= hLine.y1 && vLine.y2 >= hLine.y2) {
+		return make([]int, 0), false
+	}
+
+	result := make([]int, 2)
+	result[0] = vLine.x1
+	result[1] = hLine.y1
+	return result, true
+}
+
 func findOverlaps(linesMap map[int][]Line) map[int][][2]int {
 	overlapsMap := make(map[int][][2]int)
 
 	for sameValue, lines := range linesMap {
-		fmt.Println(sameValue)
 		length := len(lines)
 		if length <= 1 {
 			continue
@@ -151,7 +168,6 @@ func findOverlaps(linesMap map[int][]Line) map[int][][2]int {
 				if !overlapped {
 					continue
 				}
-
 				overlapsMap[sameValue] = append(overlapsMap[sameValue], [2]int{overlapLine[0], overlapLine[1]})
 			}
 		}
@@ -162,14 +178,12 @@ func findOverlaps(linesMap map[int][]Line) map[int][][2]int {
 func main() {
 	filename := os.Args[1]
 	lines := parseInput(filename)
-	fmt.Println(lines)
 
 	diagram := Diagram{
 		horizontalLines:   make(map[int][]Line),
 		verticalLines:     make(map[int][]Line),
 		horizontalOveraps: make(map[int][][2]int),
 		verticalOveraps:   make(map[int][][2]int),
-		crossOveraps:      make([][2]int, 0),
 	}
 
 	for _, line := range lines {
@@ -181,6 +195,22 @@ func main() {
 	}
 	diagram.horizontalOveraps = findOverlaps(diagram.horizontalLines)
 	diagram.verticalOveraps = findOverlaps(diagram.verticalLines)
+
+	for _, hLines := range diagram.horizontalLines {
+		for _, hLine := range hLines {
+			for _, vLines := range diagram.verticalLines {
+				for _, vLine := range vLines {
+					point, crossed := findCrossPoint(hLine, vLine)
+					if !crossed {
+						continue
+					}
+					// adds horizontal overlaps (whatever!)
+					diagram.horizontalOveraps[point[1]] = append(diagram.horizontalOveraps[point[1]], [2]int{point[0], point[0]})
+					fmt.Println(point)
+				}
+			}
+		}
+	}
 
 	fmt.Println(diagram)
 }
