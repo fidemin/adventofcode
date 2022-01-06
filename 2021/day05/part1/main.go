@@ -5,22 +5,41 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
 
-type Diagram struct {
-	horizontalLines   map[int][]Line
-	verticalLines     map[int][]Line
-	horizontalOveraps map[int][][2]int
-	verticalOveraps   map[int][][2]int
+type Diagram [1000][1000]int
+
+func (d *Diagram) drawLine(line Line) {
+	p1 := line.p1
+	p2 := line.p2
+
+	if p1[0] == p2[0] {
+		x := p1[0]
+		//vertical
+		max := Max(p1[1], p2[1])
+		min := Min(p1[1], p2[1])
+
+		for ; max >= min; min++ {
+			d[min][x] += 1
+		}
+	} else {
+		// horizontal
+		x := p1[1]
+		//vertical
+		max := Max(p1[0], p2[0])
+		min := Min(p1[0], p2[0])
+
+		for ; max >= min; min++ {
+			d[x][min] += 1
+		}
+	}
 }
 
 type Line struct {
-	x1, y1, x2, y2 int
-	isHorizontal   bool
-	sameValue      int
+	p1 [2]int
+	p2 [2]int
 }
 
 func Min(x, y int) int {
@@ -67,128 +86,24 @@ func parseInput(filename string) []Line {
 			continue
 		}
 
-		isHorizontal := false
-		sameValue := x1
-
-		if y1 == y2 {
-			isHorizontal = true
-			sameValue = y1
-			// make x1 smaller value
-			if x1 > x2 {
-				temp := x2
-				x2 = x1
-				x1 = temp
-			}
-		} else {
-			// make y1 smaller value
-			if y1 > y2 {
-				temp := y2
-				y2 = y1
-				y1 = temp
-			}
-
-		}
+		p1 := [2]int{x1, y1}
+		p2 := [2]int{x2, y2}
 
 		line := Line{
-			x1:           x1,
-			y1:           y1,
-			x2:           x2,
-			y2:           y2,
-			isHorizontal: isHorizontal,
-			sameValue:    sameValue,
+			p1: p1,
+			p2: p2,
 		}
 		lines = append(lines, line)
 	}
 	return lines
 }
 
-// find intersect of two lines (x1, x2), (x3, x4)
-func intersectTwoLines(line1 [2]int, line2 [2]int) ([]int, bool) {
-	sort.Ints(line1[:])
-	sort.Ints(line2[:])
-
-	firstLine := line1
-	secondLine := line2
-
-	if line1[0] > line2[0] {
-		firstLine = line2
-		secondLine = line1
-	}
-
-	if secondLine[0] > firstLine[1] {
-		// no intersect
-		return make([]int, 0), false
-	} else {
-		result := make([]int, 2)
-		result[0] = Max(firstLine[0], secondLine[0])
-		result[1] = Min(firstLine[1], secondLine[1])
-		return result, true
-	}
-}
-
-func findCrossPoint(line1 Line, line2 Line) ([]int, bool) {
-	hLine := line1
-	vLine := line2
-
-	if !line1.isHorizontal {
-		vLine = line1
-		hLine = line2
-	}
-
-	if !(hLine.x1 <= vLine.x1 && hLine.x2 >= vLine.x1 && vLine.y1 <= hLine.y1 && vLine.y2 >= hLine.y2) {
-		return make([]int, 0), false
-	}
-
-	result := make([]int, 2)
-	result[0] = vLine.x1
-	result[1] = hLine.y1
-	return result, true
-}
-
-func findOverlaps(linesMap map[int][]Line) map[int][][2]int {
-	overlapsMap := make(map[int][][2]int)
-
-	for sameValue, lines := range linesMap {
-		length := len(lines)
-		if length <= 1 {
-			continue
-		}
-		for i := 0; i < length-1; i++ {
-			thisLine := lines[i]
-			for j := i + 1; j < length; j++ {
-				thatLine := lines[j]
-				overlapLine := make([]int, 0)
-				overlapped := false
-				if thisLine.isHorizontal {
-					overlapLine, overlapped = intersectTwoLines([2]int{thisLine.x1, thisLine.x2}, [2]int{thatLine.x1, thatLine.x2})
-				} else {
-					overlapLine, overlapped = intersectTwoLines([2]int{thisLine.y1, thisLine.y2}, [2]int{thatLine.y1, thatLine.x2})
-				}
-
-				if !overlapped {
-					continue
-				}
-				overlapsMap[sameValue] = append(overlapsMap[sameValue], [2]int{overlapLine[0], overlapLine[1]})
-			}
-		}
-	}
-	return overlapsMap
-}
-
 func main() {
 	filename := os.Args[1]
-	diagram := [1000][1000]int{}
+	diagram := Diagram{}
 	lines := parseInput(filename)
 	for _, line := range lines {
-		if line.isHorizontal {
-			for i := line.x1; i <= line.x2; i++ {
-				diagram[line.sameValue][i] += 1
-			}
-		} else {
-			for i := line.y1; i <= line.y2; i++ {
-				diagram[i][line.sameValue] += 1
-			}
-		}
+		diagram.drawLine(line)
 	}
 
 	count := 0
@@ -201,5 +116,4 @@ func main() {
 		}
 	}
 	fmt.Println(count)
-
 }
