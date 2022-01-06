@@ -24,7 +24,7 @@ func (d *Diagram) drawLine(line Line) {
 		for ; max >= min; min++ {
 			d[min][x] += 1
 		}
-	} else {
+	} else if p1[1] == p2[1] {
 		// horizontal
 		x := p1[1]
 		max := Max(p1[0], p2[0])
@@ -32,6 +32,28 @@ func (d *Diagram) drawLine(line Line) {
 
 		for ; max >= min; min++ {
 			d[x][min] += 1
+		}
+	} else {
+		// diagonal
+		xDirection := 1
+
+		if p1[0] > p2[0] {
+			xDirection = -1
+		}
+
+		yDirection := 1
+
+		if p1[1] > p2[1] {
+			yDirection = -1
+		}
+
+		for {
+			d[p1[1]][p1[0]] += 1
+			if p1[0] == p2[0] {
+				break
+			}
+			p1[0] += xDirection
+			p1[1] += yDirection
 		}
 	}
 }
@@ -79,11 +101,6 @@ func parseInput(filename string) []Line {
 		y1, _ := strconv.Atoi(x1y1StrList[1])
 		x2, _ := strconv.Atoi(x2y2StrList[0])
 		y2, _ := strconv.Atoi(x2y2StrList[1])
-
-		// only horizontal or vertical line is valid
-		if !((x1 == x2) || (y1 == y2)) {
-			continue
-		}
 
 		p1 := [2]int{x1, y1}
 		p2 := [2]int{x2, y2}
