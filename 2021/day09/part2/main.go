@@ -27,8 +27,6 @@ func (ints *ThreeMaxInts) Insert(num int) {
 	}
 }
 
-var usedPointMat [100][100]bool
-
 func parseInput(filename string) [][]int {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -106,23 +104,19 @@ func findLowPoints(mat [][]int) []Point {
 }
 
 func basinSizeAtPoint(mat *[][]int, point Point) int {
-	if usedPointMat[point.y][point.x] {
-		return 0
-	}
-
 	x := point.x
 	y := point.y
 	rowLen := len(*mat)
 	columnLen := len((*mat)[0])
-
-	// check point as used
-	usedPointMat[y][x] = true
 
 	val := (*mat)[y][x]
 
 	if val == 9 {
 		return 0
 	}
+
+	// check used point: set it as 9
+	(*mat)[y][x] = 9
 
 	sum := 1
 
