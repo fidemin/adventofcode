@@ -7,18 +7,32 @@ import (
 	"os"
 )
 
+func parseInput(filename string) []*Line {
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	lines := make([]*Line, 0)
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		str := scanner.Text()
+		line := NewLine(str)
+		lines = append(lines, line)
+	}
+
+	return lines
+}
+
 type LineStatus string
 
 const (
 	LineStatusCorrupted  LineStatus = "Corrupted"
 	LineStatusInComplete LineStatus = "InComplete"
 )
-
-type Line struct {
-	str    string
-	len    int
-	cursor int
-}
 
 var charSetPair map[uint8]uint8 = map[uint8]uint8{
 	'[': ']',
@@ -32,6 +46,12 @@ var charPoint map[uint8]int = map[uint8]int{
 	']': 57,
 	'}': 1197,
 	'>': 25137,
+}
+
+type Line struct {
+	str    string
+	len    int
+	cursor int
 }
 
 func NewLine(str string) *Line {
@@ -62,26 +82,6 @@ func (l *Line) FindStatus() LineStatus {
 		l.cursor += 1
 	}
 	return LineStatusInComplete
-}
-
-func parseInput(filename string) []*Line {
-	file, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-
-	lines := make([]*Line, 0)
-
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		str := scanner.Text()
-		line := NewLine(str)
-		lines = append(lines, line)
-	}
-
-	return lines
 }
 
 func (l *Line) CharPoint() int {
