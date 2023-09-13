@@ -1,6 +1,5 @@
 import os
 
-from collections.abc import Iterable
 import pytest
 
 from . import main
