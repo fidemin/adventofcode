@@ -18,17 +18,23 @@ def parse_input_of_calories(filename):
         return calories_for_elfs
 
 
-def extract_max_calories(calories_for_elfs):
+def extract_max_calories(calories_for_elves):
     """
-    :param calories_for_elfs: calories for elfs. e.g. [[100, 200], [100], [300, 400]]
+    :param calories_for_elves: calories for elfs. e.g. [[100, 200], [100], [300, 400]]
     :return: max calories for one elf
     """
     current_max = 0
 
-    for calories_for_elf in calories_for_elfs:
+    for calories_for_elf in calories_for_elves:
         current_max = max(current_max, sum(calories_for_elf))
 
     return current_max
+
+
+def find_top_3(calories_for_elves: list):
+    sum_calories_for_elves = [sum(x) for x in calories_for_elves]
+    sum_calories_for_elves.sort(reverse=True)
+    return sum_calories_for_elves[:3]
 
 
 if __name__ == '__main__':
@@ -46,6 +52,10 @@ if __name__ == '__main__':
         print('Result')
         print(extract_max_calories(calories))
     elif part == 'p2':
-        raise NotImplementedError('p2 is not implemented yet')
+        calories = parse_input_of_calories(input_file_name)
+        print('Result')
+        top3 = find_top_3(calories)
+        print(sum(top3))
+
     else:
         raise RuntimeError('{part} is not proper problem argument'.format(part=part))

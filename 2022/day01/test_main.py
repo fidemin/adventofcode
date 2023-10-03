@@ -27,3 +27,12 @@ def test_input_of_calories():
 def test_extract_max_calories(test_input, expected):
     assert main.extract_max_calories(test_input) == expected
 
+
+def test_find_top_3():
+    test_input = [[1000], [2000, 3000], [4000], [5000, 6000], [7000, 8000, 9000], [10000]]
+
+    expected = [24000, 11000, 10000]
+
+    actual = main.find_top_3(test_input)
+
+    assert_list(actual, expected)
