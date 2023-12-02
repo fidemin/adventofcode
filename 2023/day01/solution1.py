@@ -1,22 +1,21 @@
-from common import preprocess
+from day01.common import preprocess
 
 
-def extract_digits(string: str):
+def extract_digits_of_int(string: str):
     """
     extract first and last digits in string
 
     :param string:
     :return:
     """
-    first_digit = extract_digit(string)
-    last_digit = extract_digit(string, first=False)
-    return first_digit, last_digit
+    first_pos_digit = extract_digit(string)
+    last_pos_digit = extract_digit(string, first=False)
+    return first_pos_digit, last_pos_digit
 
 
 def extract_digit(string: str, first=True):
     length = len(string)
 
-    digit = None
     start = 0
     end = length
     step = 1
@@ -31,19 +30,19 @@ def extract_digit(string: str, first=True):
 
         try:
             digit = int(char)
+            return digit
         except ValueError:
             continue
 
-        break
-    return digit
+    return None
 
 
 def extract_calibration_value(string: str):
-    first_digit, last_digit = extract_digits(string)
+    first_digit, last_digit = extract_digits_of_int(string)
     return first_digit * 10 + last_digit
 
 
-def solution1(filename):
+def solve(filename):
     with open(filename, 'r') as f:
         rows = preprocess(f)
 

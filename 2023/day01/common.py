@@ -1,4 +1,3 @@
-
 def preprocess(file):
     rows = []
     for line in file:
