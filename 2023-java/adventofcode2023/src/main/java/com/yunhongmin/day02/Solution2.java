@@ -5,31 +5,31 @@ import com.yunhongmin.util.FileReader;
 import java.util.List;
 import java.util.Objects;
 
-public class Solution1 {
+public class Solution2 {
     public static void main(String[] args) {
-//        String path = "day02/sample1.txt";
+//        String path = "day02/sample2.txt";
         String path = "day02/input.txt";
         String absolutePath = Objects.requireNonNull(
-                com.yunhongmin.day02.Solution1.class.getResource("/" + path)).getFile();
+                com.yunhongmin.day02.Solution2.class.getResource("/" + path)).getFile();
         List<String> strings = FileReader.readAll(absolutePath);
 
-        CubeDeterminant cubeDeterminant = new CubeDeterminant(12, 13, 14);
-        int possibleGameNumberSum = 0;
+        int result = 0;
 
         for (String str : strings) {
             // str: Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
             String[] gameCubeSetsSplit = str.split(": ");
 
-            int gameNumber = Integer.parseInt(gameCubeSetsSplit[0].split(" ")[1]);
-
             // cubeSetsString: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
             String cubeSetsString = gameCubeSetsSplit[1];
             String[] cubeSetStrings = cubeSetsString.split("; ");
 
-            boolean isPossible = true;
-            for (String cubeSetString : cubeSetStrings) {
-                // cubeSetString: 3 blue, 4 red
-                String[] cubeStrings = cubeSetString.split(", ");
+            int maxRed = 0;
+            int maxGreen = 0;
+            int maxBlue = 0;
+            for (String cubeSetStringPerGame : cubeSetStrings) {
+
+                // cubeSetStringPerGame: 3 blue, 4 red
+                String[] cubeStrings = cubeSetStringPerGame.split(", ");
 
                 for (String cubeString : cubeStrings) {
                     // cubeString: 3 blue
@@ -37,22 +37,19 @@ public class Solution1 {
                     int count = Integer.parseInt(cubeCountColorString[0]);
                     String color = cubeCountColorString[1];
 
-                    if (!cubeDeterminant.isPossible(color, count)) {
-                        isPossible = false;
-                        break;
+                    if (color.equals("red")) {
+                        maxRed = Math.max(maxRed, count);
+                    } else if (color.equals("green")) {
+                        maxGreen = Math.max(maxGreen, count);
+                    } else {
+                        maxBlue = Math.max(maxBlue, count);
                     }
                 }
-
-                if (!isPossible) {
-                    break;
-                }
             }
-            if (isPossible) {
-                possibleGameNumberSum += gameNumber;
-            }
+            result += maxRed * maxGreen * maxBlue;
         }
 
-        System.out.println("answer: " + possibleGameNumberSum);
+        System.out.println("answer: " + result);
     }
 }
 
