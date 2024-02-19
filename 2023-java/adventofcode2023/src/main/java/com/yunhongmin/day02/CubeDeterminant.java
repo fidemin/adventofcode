@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CubeDeterminant {
-    Map<String, Integer> cubes;
+    Map<CubeColor, Integer> cubes;
 
     public CubeDeterminant(int red, int green, int blue) {
         cubes = new HashMap<>();
-        cubes.put("red", red);
-        cubes.put("green", green);
-        cubes.put("blue", blue);
+        cubes.put(CubeColor.RED, red);
+        cubes.put(CubeColor.GREEN, green);
+        cubes.put(CubeColor.BLUE, blue);
     }
 
-    public boolean isPossible(String color, int count) {
+    public boolean isPossible(CubeColor color, int count) {
         return cubes.get(color) >= count;
     }
 }

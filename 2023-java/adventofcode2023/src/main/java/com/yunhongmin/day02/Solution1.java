@@ -28,16 +28,10 @@ public class Solution1 {
 
             boolean isPossible = true;
             for (String cubeSetString : cubeSetStrings) {
-                // cubeSetString: 3 blue, 4 red
-                String[] cubeStrings = cubeSetString.split(", ");
+                CubeSet cubeSet = CubeSet.fromString(cubeSetString);
 
-                for (String cubeString : cubeStrings) {
-                    // cubeString: 3 blue
-                    String[] cubeCountColorString = cubeString.split(" ");
-                    int count = Integer.parseInt(cubeCountColorString[0]);
-                    String color = cubeCountColorString[1];
-
-                    if (!cubeDeterminant.isPossible(color, count)) {
+                for (CubeColor cubeColor : CubeColor.values()) {
+                    if (!cubeDeterminant.isPossible(cubeColor, cubeSet.get(cubeColor))) {
                         isPossible = false;
                         break;
                     }
