@@ -2,7 +2,9 @@ package com.yunhongmin.day02;
 
 import com.yunhongmin.util.FileReader;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Solution2 {
@@ -23,30 +25,28 @@ public class Solution2 {
             String cubeSetsString = gameCubeSetsSplit[1];
             String[] cubeSetStrings = cubeSetsString.split("; ");
 
-            int maxRed = 0;
-            int maxGreen = 0;
-            int maxBlue = 0;
+            Map<CubeColor, Integer> maxSet = new HashMap<CubeColor, Integer>() {
+                {
+                    put(CubeColor.RED, 0);
+                    put(CubeColor.GREEN, 0);
+                    put(CubeColor.BLUE, 0);
+                }
+            };
+
             for (String cubeSetStringPerGame : cubeSetStrings) {
-
                 // cubeSetStringPerGame: 3 blue, 4 red
-                String[] cubeStrings = cubeSetStringPerGame.split(", ");
+                CubeSet cubeSet = CubeSet.fromString(cubeSetStringPerGame);
 
-                for (String cubeString : cubeStrings) {
-                    // cubeString: 3 blue
-                    String[] cubeCountColorString = cubeString.split(" ");
-                    int count = Integer.parseInt(cubeCountColorString[0]);
-                    String color = cubeCountColorString[1];
-
-                    if (color.equals("red")) {
-                        maxRed = Math.max(maxRed, count);
-                    } else if (color.equals("green")) {
-                        maxGreen = Math.max(maxGreen, count);
-                    } else {
-                        maxBlue = Math.max(maxBlue, count);
-                    }
+                for (CubeColor cubeColor : CubeColor.values()) {
+                    maxSet.put(cubeColor, Math.max(maxSet.get(cubeColor), cubeSet.get(cubeColor)));
                 }
             }
-            result += maxRed * maxGreen * maxBlue;
+
+            int multiply = 1;
+            for (int value : maxSet.values()) {
+                multiply *= value;
+            }
+            result += multiply;
         }
 
         System.out.println("answer: " + result);
