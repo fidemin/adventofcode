@@ -1,21 +1,24 @@
-from model import Bid, Hand
+from model import Bid, Hand, HandWithJoker
 
 
 def preprocess(f):
     return [line.strip() for line in f]
 
 
-def parse_row(row: str) -> Bid:
+def parse_row(row: str, with_joker=False) -> Bid:
     cards, bidStr = row.split(' ')
-    hand = Hand(cards)
+    if with_joker:
+        hand = HandWithJoker(cards)
+    else:
+        hand = Hand(cards)
     return Bid(hand, int(bidStr))
 
 
-def solve(filepath: str):
+def solve(filepath: str, with_joker=False):
     with open(filepath, 'r') as f:
         rows = preprocess(f)
 
-    bids = [parse_row(row) for row in rows]
+    bids = [parse_row(row, with_joker) for row in rows]
     bids.sort(key=lambda bid: (bid.hand.hand_type.value, bid.hand.card_nums))
 
     ret = 0
