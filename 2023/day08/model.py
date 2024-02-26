@@ -61,3 +61,7 @@ class Network:
         elif direction == 'R':
             return self._nodes[value].right
         raise RuntimeError(f'{direction} is not an available direction')
+
+    @property
+    def nodes(self):
+        return self._nodes
