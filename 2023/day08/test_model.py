@@ -22,7 +22,7 @@ class TestNode:
             ('AAA', None, None),
     ))
     def test_node(self, value, left, right):
-        actual = Node(value, left, right)
+        actual = Node(value, None, left, right)
 
         assert value == actual.value
         if left is not None:
