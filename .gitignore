@@ -133,3 +133,6 @@ dmypy.json
 
 # macbook
 .DS_Store
+
+# rust
+main
