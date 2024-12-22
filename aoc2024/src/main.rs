@@ -1,6 +1,8 @@
 
-mod day03;
 use std::env;
+
+mod day03;
+mod day04;
 
 fn main() {
     let day_ = env::args().nth(1).expect("No day provided");
@@ -14,5 +16,15 @@ fn main() {
         } else {
             println!("Invalid part provided");
         }
+    } else if day_ == "day04" {
+        if part_ == "part1" {
+            day04::part1::solve(&file_path);
+        } else if part_ == "part2" {
+            // day04::part2::solve(&file_path);
+        } else {
+            println!("Invalid part provided");
+        }
+    } else {
+        println!("Invalid day provided");
     }
 }
