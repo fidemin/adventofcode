@@ -20,7 +20,7 @@ fn main() {
         if part_ == "part1" {
             day04::part1::solve(&file_path);
         } else if part_ == "part2" {
-            // day04::part2::solve(&file_path);
+            day04::part2::solve(&file_path);
         } else {
             println!("Invalid part provided");
         }

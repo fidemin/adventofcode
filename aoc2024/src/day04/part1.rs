@@ -45,48 +45,6 @@ fn count_at_for_target(target: &str, content_matrix: &Vec<&str>, y: usize, x: us
         }
     }
 
-
-
-    // let right_result = check_at_for_target_with_direction(target, content_matrix, y, x, 0, 1, false);
-    // if right_result {
-    //     count = count + 1;
-    // }
-
-    // let left_result = check_at_for_target_with_direction(target, content_matrix, y, x, 0, -1, false);
-    // if left_result {
-    //     count = count + 1;
-    // }
-
-    // let down_result = check_at_for_target_with_direction(target, content_matrix, y, x, 1, 0, false);
-    // if down_result {
-    //     count = count + 1;
-    // }
-
-    // let up_result = check_at_for_target_with_direction(target, content_matrix, y, x, -1, 0, true);
-    // if up_result {
-    //     count = count + 1;
-    // }
-
-    // let right_down_result = check_at_for_target_with_direction(target, content_matrix, y, x, 1, 1, false);
-    // if right_down_result {
-    //     count = count + 1;
-    // }
-
-    // let left_down_result = check_at_for_target_with_direction(target, content_matrix, y, x, 1, -1, false);
-    // if left_down_result {
-    //     count = count + 1;
-    // }
-
-    // let right_up_result = check_at_for_target_with_direction(target, content_matrix, y, x, -1, 1, false);
-    // if right_up_result {
-    //     count = count + 1;
-    // }
-
-    // let left_up_result = check_at_for_target_with_direction(target, content_matrix, y, x, -1, -1, false);
-    // if left_up_result {
-    //     count = count + 1;
-    // }
-
     return count;
 }
 
