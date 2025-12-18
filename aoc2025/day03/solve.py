@@ -15,7 +15,35 @@ def solve_part1(inputs):
 
 
 def solve_part2(inputs):
-    pass
+    result = 0
+
+    for bank in inputs:
+        stack = []
+
+        for i in range(len(bank) - 1, -1, -1):
+            battery = int(bank[i])
+            if len(stack) < 12:
+                stack.append(battery)
+                continue
+
+            temp = battery
+            temp_list = []
+
+            while stack and temp >= stack[-1]:
+                temp_list.append(temp)
+                temp = stack.pop()
+
+            for item in reversed(temp_list):
+                stack.append(item)
+
+        this_result = 0
+        for battery in reversed(stack):
+            this_result = this_result * 10 + battery
+
+        # print(bank, this_result, stack)
+
+        result += this_result
+    return result
 
 
 def solve(part, sample=False):
